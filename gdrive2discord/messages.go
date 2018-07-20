@@ -73,7 +73,7 @@ func CreateDiscordMessage(subscription *Subscription, userState *UserState, fold
 	return &discord.Message{
 		Username:    "Google Drive",
 		Text:        "Activity on gdrive:",
-		IconUrl:     https://giveawaynetwork.xyz/assets/img/google-drive-logo.png",
+		IconUrl:     "https://giveawaynetwork.xyz/assets/img/google-drive-logo.png",
 		Attachments: attachments,
 	}
 }
