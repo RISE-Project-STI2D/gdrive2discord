@@ -6,7 +6,7 @@ import (
 	"./gdrive2discord"
 )
 
-var version string
+var version = "0.0.1a"
 
 func main() {
 	logger := gdrive2discord.NewLogger(os.Stdout, "", 0)

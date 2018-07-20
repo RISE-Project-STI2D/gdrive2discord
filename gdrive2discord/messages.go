@@ -73,7 +73,7 @@ func CreateDiscordMessage(subscription *Subscription, userState *UserState, fold
 	return &discord.Message{
 		Username:    "Google Drive",
 		Text:        "Activity on gdrive:",
-		IconUrl:     fmt.Sprintf("https://giveawaynetwork.xyz/assets/img/google-drive-logo.png", version),
+		IconUrl:     https://giveawaynetwork.xyz/assets/img/google-drive-logo.png",
 		Attachments: attachments,
 	}
 }
@@ -82,6 +82,6 @@ func CreateDiscordWelcomeMessage(redirectUri string, gUserInfo *userinfo.UserInf
 	return &discord.Message{
 		Username: "Google Drive",
 		Text:     fmt.Sprintf("A %s integration has been configured by %s. Activities on Google Drive documents will be notified here. Forked & adapted by Mxb", redirectUri, gUserInfo.DisplayName),
-		IconUrl:  fmt.Sprintf("https://giveawaynetwork.xyz/assets/img/google-drive-logo.png", version),
+		IconUrl:  "https://giveawaynetwork.xyz/assets/img/google-drive-logo.png",
 	}
 }
