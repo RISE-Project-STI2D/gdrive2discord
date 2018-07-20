@@ -35,17 +35,17 @@ func preventNotification(source string) string {
 	return strings.Join(split, " ")
 }
 
-func CreateSlackAttachment(change *drive.ChangeItem) *discord.Attachment {
+func CreateDiscordAttachment(change *drive.ChangeItem) *discord.Attachment {
 	var editor string
 	if len(change.File.LastModifyingUser.EmailAddress) > 0 && len(change.File.LastModifyingUser.DisplayName) > 0 {
-		editor = fmt.Sprintf("%s - %s", change.File.LastModifyingUser.EmailAddress, preventNotification(change.File.LastModifyingUser.DisplayName))
+		editor = fmt.Sprintf("%s - **%s**", change.File.LastModifyingUser.EmailAddress, preventNotification(change.File.LastModifyingUser.DisplayName))
 	} else if len(change.File.LastModifyingUser.DisplayName) > 0 {
 		editor = preventNotification(change.File.LastModifyingUser.DisplayName)
 	} else {
 		editor = "Unknown"
 	}
 	return &discord.Attachment{
-		Fallback: fmt.Sprintf("Changes Detected to %s : %s - %s", change.Type, change.File.AlternateLink, change.File.Title),
+		Fallback: fmt.Sprintf("➡️ __Changes Detected to %s :__ %s - %s", change.Type, change.File.AlternateLink, change.File.Title),
 		Fields: []discord.Field{
 			{
 				Title: fmt.Sprintf("%s %s", change.LastAction, change.Type),
@@ -66,24 +66,22 @@ func CreateDiscordMessage(subscription *Subscription, userState *UserState, fold
 	var roots = subscription.GoogleInterestingFolderIds
 	for i := 0; i != len(userState.Gdrive.ChangeSet); i++ {
 		if len(roots) == 0 || folders.FolderIsOrIsContainedInAny(userState.Gdrive.ChangeSet[i].File.Parents, roots) {
-			attachments = append(attachments, *CreateSlackAttachment(&userState.Gdrive.ChangeSet[i]))
+			attachments = append(attachments, *CreateDiscordAttachment(&userState.Gdrive.ChangeSet[i]))
 		}
 
 	}
 	return &discord.Message{
-		Channel:     subscription.Channel,
 		Username:    "Google Drive",
-		Text:        fmt.Sprintf("Activity on gdrive (configured by @%s)", preventNotification(subscription.GoogleUserInfo.DisplayName)),
-		IconUrl:     fmt.Sprintf("http://gdrive2slack.optionfactory.net/gdrive2slack.png?ck=%s", version),
+		Text:        "Activity on gdrive:",
+		IconUrl:     fmt.Sprintf("https://giveawaynetwork.xyz/assets/img/google-drive-logo.png", version),
 		Attachments: attachments,
 	}
 }
 
-func CreateDiscordWelcomeMessage(channel string, redirectUri string, gUserInfo *userinfo.UserInfo, version string) *discord.Message {
+func CreateDiscordWelcomeMessage(redirectUri string, gUserInfo *userinfo.UserInfo, version string) *discord.Message {
 	return &discord.Message{
-		Channel:  channel,
 		Username: "Google Drive",
-		Text:     fmt.Sprintf("A %s integration has been configured by <@%s>. Activities on Google Drive documents will be notified here. Forked & adapted by Mxb", redirectUri, gUserInfo.DisplayName),
-		IconUrl:  fmt.Sprintf("http://gdrive2slack.optionfactory.net/gdrive2slack.png?ck=%s", version),
+		Text:     fmt.Sprintf("A %s integration has been configured by %s. Activities on Google Drive documents will be notified here. Forked & adapted by Mxb", redirectUri, gUserInfo.DisplayName),
+		IconUrl:  fmt.Sprintf("https://giveawaynetwork.xyz/assets/img/google-drive-logo.png", version),
 	}
 }

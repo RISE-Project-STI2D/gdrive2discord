@@ -87,7 +87,6 @@ type Field struct {
 
 // Message Old Slack message format
 type Message struct {
-	Channel     string       `json:"channel"`
 	Username    string       `json:"username"`
 	Text        string       `json:"text"`
 	Attachments []Attachment `json:"attachments"`

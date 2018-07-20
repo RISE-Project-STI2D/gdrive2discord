@@ -14,8 +14,7 @@ import (
 
 type Request struct {
 	GoogleCode        string   `json:"g"`
-	DiscordWebhookURL string   `json:"s"`
-	Channel           string   `json:"c"`
+	DiscordWebhookURL string   `json:"w"`
 	FolderIds         []string `json:"fids"`
 	FolderName        string   `json:"fn"`
 }
@@ -67,9 +66,6 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 		renderer.JSON(400, &ErrResponse{"Invalid webhook for discord"})
 		return
 	}
-	if r.Channel == "" {
-		r.Channel = "#general"
-	}
 	googleRefreshToken, googleAccessToken, status, err := google.NewAccessToken(env.Configuration.Google, env.HttpClient, r.GoogleCode)
 	if status != google.Ok {
 		renderer.JSON(500, &ErrResponse{err.Error()})
@@ -85,12 +81,11 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 		renderer.JSON(500, &ErrResponse{err.Error()})
 		return
 	}
-	welcomeMessage := CreateDiscordWelcomeMessage(r.Channel, env.Configuration.Google.RedirectUri, gUserInfo, env.Version)
+	welcomeMessage := CreateDiscordWelcomeMessage(env.Configuration.Google.RedirectUri, gUserInfo, env.Version)
 	cstatus, err := discord.PostMessage(env.HttpClient, r.DiscordWebhookURL, welcomeMessage)
 
 	env.RegisterChannel <- &SubscriptionAndAccessToken{
 		Subscription: &Subscription{
-			r.Channel,
 			r.DiscordWebhookURL,
 			googleRefreshToken,
 			gUserInfo,

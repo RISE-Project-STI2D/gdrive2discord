@@ -12,8 +12,7 @@ import (
 )
 
 type Subscription struct {
-	Channel                    string               `json:"channel"`
-	DiscordWebhookURL          string               `json:"slack_access_token"`
+	DiscordWebhookURL          string               `json:"webhook_url"`
 	GoogleRefreshToken         string               `json:"google_refresh_token"`
 	GoogleUserInfo             *userinfo.UserInfo   `json:"guser"`
 	WebhookInfo                *discord.WebhookInfo `json:"suser"`

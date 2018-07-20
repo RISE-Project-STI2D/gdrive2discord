@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-      <title>Google Drive to Slack integration</title>
+      <title>Google Drive to Discord integration</title>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta name="description" content="Frictionless integration between Google Drive and Slack. Now with filtering by folder!">
-      <meta name="keywords" content="slack,google,drive,gdrive,integration">
+      <meta name="description" content="Frictionless integration between Google Drive and Discord, with Webhooks!. Now with filtering by folder!">
+      <meta name="keywords" content="discord,google,drive,gdrive,integration,webhook">
       <link rel="shortcut icon" href="/favicon.ico?ck={{.Version}}">
       <link rel="apple-touch-icon" href="/favicon.png?ck={{.Version}}">
       <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css" rel="stylesheet">
@@ -16,7 +16,7 @@
     <body role="document">
         <div style="display: none">
                 Make sure your team is on the same page. 
-                Get Slack notifications whenever new documents are created or when existing ones are shared with you, modified or deleted.
+                Get Discord notifications whenever new documents are created or when existing ones are shared with you, modified or deleted.
         </div>
 
       <!-- REGISTRATION -->
@@ -24,15 +24,15 @@
         <div class="container container-md-height">
           <div class="row row-md-height">
             <div class="col-md-12 text-center main-column col-md-height">
-              <h1 class="main-title horizontal">Google Drive &#8594; Slack</h1>
-              <h1 class="main-title vertical">Google Drive<br>&#8595;<br>Slack</h1>
-              <p class="lead">Slack notifications whenever you work on Google Drive docs
+              <h1 class="main-title horizontal">Google Drive &#8594; Discord</h1>
+              <h1 class="main-title vertical">Google Drive<br>&#8595;<br>Discord</h1>
+              <p class="lead">Discord webhooks notifications whenever you work on Google Drive docs
               <br/><span style="font-size: .8em; font-weight: normal" class="news">Now supports watching a specific folder!</span></p>
               <div id="registration-panel" class="panel panel-default subscription" style="display: none">
                 <section id="registration-success" class="panel-body title" style="display: none">
                   <div>
                     <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x text-success"></i><i id="symbol" class="fa fa-stack-1x fa-inverse fa-check"></i></span></div>
-                    <div>Success! Welcome <strong id="registration-user"></strong>, thanks for registering! From now on your Google Drive changeset stream will be published on your slack channel.</div>
+                    <div>Success! Welcome <strong id="registration-user"></strong>, thanks for registering! From now on your Google Drive changeset stream will be published on your discord channel.</div>
                   </div>
                 </section>
                 <section id="registration-failure" class="panel-body title" style="display: none">
@@ -58,9 +58,9 @@
                 </section>
                 <section id="drive-folder-form" class="panel-body title" style="display: none">
                   <div>
-                    <div class="symbol col-bottom"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>4</span><span class="divider">/</span><span class="total">4</span></strong></span></div>
+                    <div class="symbol col-bottom"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>3</span><span class="divider">/</span><span class="total">3</span></strong></span></div>
                     <div class="form-group">
-                        <label for="slack-channel" style="display: block">Google drive folder</label>
+                        <label for="discord-channel" style="display: block">Google drive folder</label>
                         <input type="text" id="drive-folder" readonly="readonly" placeholder="Leave empty to watch all folders" class="form-control" style="display: inline-block; width: 75%">
                         <button value="choose" class="form-control" id="pick-drive-folder" style="display: inline-block; width: 13%; max-width: 50px; min-width: 35px;"><i class="fa fa-folder-open-o"></i></button>
                         <button value="reset" class="form-control" id="reset-drive-folder" style="display: inline-block; width: 12%; max-width: 50px; min-width: 300x;"><i class="fa fa-remove"></i></button>
@@ -69,40 +69,17 @@
                   </div>
                 </section>
               </div>
-
-              <div id="slack-channel-panel" class="panel panel-default subscription" style="display: none">
-                <section id="slack-channel-selected" class="panel-body title" style="display: none">
-                  <div>
-                    <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x text-success"></i><i class="fa fa-stack-1x fa-inverse fa-check"></i></span></div>
-                    <div>Slack channel selected: <strong id="selected-channel"></strong></div>
-                  </div>
-                </section>
-                <section id="slack-channel-form" class="panel-body title" style="display: none">
-                  <div>
-                    <div class="symbol col-bottom"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>3</span><span class="divider">/</span><span class="total">4</span></strong></span></div>
-                    <div class="form-group"><label for="slack-channel">Slack channel</label><input type="text" class="form-control" id="slack-channel" placeholder="Discord Webhook url"></div>
-                    <div class="action col-bottom"><button id="action-select-channel" class="btn btn-success btn-lg push-right">Go</button></div>
-                  </div>
-                </section>
-                <section id="slack-channel-not-found" class="panel-body title" style="display: none">
-                  <div>
-                    <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x text-warning"></i><i class="fa fa-stack-1x fa-inverse fa-exclamation-triangle"></i></span></div>
-                    <div>Slack channel not found. Please remember to create channel <strong id="not-found-channel"></strong></div>
-                  </div>
-                </section>
-              </div>
-
               <div id="discord-webhook-panel" class="panel panel-default subscription" style="display: none">
                 <section id="discord-webhook-success" class="panel-body title" style="display: none">
                   <div>
                     <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x text-success"></i><i class="fa fa-stack-1x fa-inverse fa-check"></i></span></div>
-                    <div>Access authorized for Slack domain</div>
+                    <div>Webhook checked</div>
                   </div>
                 </section>
                 <section id="discord-webhook-request" class="panel-body title" style="display: none">
                   <div>
-                    <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>2</span><span class="divider">/</span><span class="total">4</span></strong></span></div>
-                    <div class="form-group"><label for="slack-channel">Discord webhook:</label><input type="text" class="form-control" id="discord-webhook" placeholder="https://discordapp.com/api/webhooks/744984947974325684/EuiouoipzhjfEUopiuopieEiopuiopuze_JOEJOIJo^pijez_aojoaj"></div>
+                    <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>2</span><span class="divider">/</span><span class="total">3</span></strong></span></div>
+                    <div class="form-group"><label for="discord-channel">Discord webhook:</label><input type="text" class="form-control" id="discord-webhook" placeholder="https://discordapp.com/api/webhooks/744984947974325684/EuiouoipzhjfEUopiuopieEiopuiopuze_JOEJOIJo^pijez_aojoaj"></div>
                     <div class="action"><button id="action-discord-webhook" class="btn btn-success btn-lg push-right">Go</button></div>
                   </div>
                 </section>
@@ -117,7 +94,7 @@
                 </section>
                 <section id="google-auth-request" class="panel-body title" style="display: none">
                   <div>
-                    <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>1</span><span class="divider">/</span><span class="total">4</span></strong></span></div>
+                    <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>1</span><span class="divider">/</span><span class="total">3</span></strong></span></div>
                     <div>Authorize access to Google Drive changes stream</div>
                     <div class="action"><button id="action-auth-google" class="btn btn-success btn-lg push-right">Go</button></div>
                   </div>
@@ -135,7 +112,7 @@
             <section>
               <header class="title">
                 <div>
-                  <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-slack fa-stack-1x fa-inverse"></i></span></div>
+                  <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><i class="fa fa-comments fa-stack-1x fa-inverse"></i></span></div>
                   <div>What does it look like?</div>
                 </div>
               </header>
@@ -151,9 +128,9 @@
                   <div>What do I get with this service?</div>
                 </div>
               </header>
-              <p>Our service polls Google Drive for changes in your directories and posts notifications to your Slack channel every time something happens to your documents.</p>
+              <p>Our service polls Google Drive for changes in your directories and posts notifications to your discord channel every time something happens to your documents.</p>
               <p>This is something more than what is available from other services: you will in fact receive notifications not only when <b>new</b> documents are created, but also when existing ones are <b>shared</b> with you, <b>modified</b> or <b>deleted</b>.</p>
-              <p><b>Disclaimer:</b> this service is not created by, affiliated with, or supported by neither Slack Technologies, Inc. nor Google, Inc.</p>
+              <p><b>Disclaimer:</b> this service is not created by, affiliated with, or supported by neither Discord App.</p>
             </section>
           </div>
         </div>
@@ -170,8 +147,7 @@
               <p>It's a simple four steps process:</p>
               <ul>
                 <li>authorize our service to access info on your Google Drive changes</li>
-                <li>authorize our service to send you messages on Slack</li>
-                <li>choose a Slack <i>#channel</i>, <i>@user</i> or leave blank for <i>#general</i></li>
+                <li>Create a webhook, and put the url in the box.</li>
                 <li><span class="news">new!</span> choose a Drive folder to watch, or leave blank to include all</li>
               </ul>
               <p>In case you have multiple Google accounts, <b>make sure to use the same one in the first and last steps</b> (i.e. choose a folder from the same Google Drive account you have authorized to watch), or it won't work.</p>
@@ -185,7 +161,7 @@
                   <div>How do I unsubscribe?</div>
                 </div>
               </header>
-              <p>Unsubscribing from our service is incredibly easy. Just revoke authorizations for our application from your <a href="https://security.google.com/settings/security/permissions" target="_blank">Google account</a> and from your <a href="https://api.slack.com/tokens" target="_blank">Slack account</a>.</p>
+              <p>Unsubscribing from our service is incredibly easy. Just revoke authorizations for our application from your <a href="https://security.google.com/settings/security/permissions" target="_blank">Google account</a> and delete your webhook.</p>
               <p>No need to do anything else; our systems will notice and remove your registration</p>
               <p>If you want to change your configuration, just create another subscription using the same Google account: the old one will be automatically removed.</p>
             </section>
@@ -200,10 +176,10 @@
                   <div>I want to know more!</div>
                 </div>
               </header>
-              <p>Feel free to contact us anytime via email or twitter!</p>
+              <p>This service was originally designed by Optionfactory, and edited by Maxerbox for the RISE Project team</p>
               <ul class="contacts">
-                <li><i class="fa fa-2x fa-envelope-o"></i><a href="mailto:gdrive2slack@optionfactory.net">gdrive2slack@optionfactory.net</a></li>
-                <li><i class="fa fa-2x fa-twitter"></i><a href="http://twitter.com/option_factory">@Option_factory</a></li>
+                <li><i class="fa fa-2x fa-github"></i><a href="https://github.com/optionfactory/gdrive2slack">Original repo</a></li>
+                <li><i class="fa fa-2x fa-question-circle"></i><a href="http://twitter.com/option_factory">Gdrive2discord issue tracking</a></li>
               </ul>
             </section>
           </div>
@@ -230,10 +206,6 @@
                 </div>
               </header>
               <p>We ask for the bare minimum permissions required to offer our service.</p>
-              <p>On Slack:</p>
-              <ul>
-                <li><b>post</b> to be able to send new messages to your slack domain</li>
-              </ul>
               <p>On Google:</p>
               <ul>
                 <li><b>email address and basic profile info</b> to discriminate between different users</li>
@@ -302,7 +274,7 @@
       </script>
 
       <!-- GitHub ribbon-->
-      <a href="https://github.com/optionfactory/gdrive2slack"><img style="position: absolute; top: 0; right: 0; border: 0; z-index:1001" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+      <a href="https://github.com/RISE-Project-STI2D/gdrive2discord"><img style="position: absolute; top: 0; right: 0; border: 0; z-index:1001" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
       <script src="https://apis.google.com/js/client.js"></script>
       <script src="drivepicker.js"></script>
       <script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
@@ -366,15 +338,6 @@
               $('#google-auth-panel').show();
               $('#discord-webhook-success').show();
               $('#discord-webhook-panel').show();
-              if (state.f) {
-                $('#selected-channel').text(state.c);
-                $('#slack-channel-selected').show();
-              } else {
-                console.log(state);
-                $('#not-found-channel').text(state.c);
-                $('#slack-channel-not-found').show();
-              }
-              $('#slack-channel-panel').show();
               if (state.fns) {
                 $('#selected-folder').text(state.fns[0]);
                 $('#drive-folder-selected').show();
@@ -393,9 +356,6 @@
               }
               animate_hide('#google-auth-panel', 'fadeOut', nextDelay());
               animate_hide('#discord-webhook-panel', 'fadeOut',  nextDelay());
-              if (state.f) {
-                animate_hide('#slack-channel-panel', 'fadeOut', nextDelay());
-              }
               animate_hide('#drive-folder-panel', 'fadeOut', nextDelay());
               return;
             }
@@ -406,8 +366,6 @@
               $('#discord-webhook-success').show();
               $('#discord-webhook-panel').show();
               $('#selected-channel').text(state.c);
-              $('#slack-channel-selected').show();
-              $('#slack-channel-panel').show();
               $('#registration-error').text(params.error);
               $('#registration-failure').show();
               if(window.ga) ga('send', 'event', 'registration-result', 'registration-failure', {nonInteraction: 1 });
@@ -415,18 +373,13 @@
 
               animate_hide('#google-auth-panel', 'fadeOut', 1000);
               animate_hide('#discord-webhook-panel', 'fadeOut', 1500);
-              animate_hide('#slack-channel-panel', 'fadeOut', 2000);
               return;
             }
-            if (state.c) {
+            if (state.w) {
               $('#google-auth-success').show();
               $('#google-auth-panel').show();
               $('#discord-webhook-success').show();
               $('#discord-webhook-panel').show();
-              $('#slack-channel-panel').show();
-              $('#selected-channel').text(state.c);
-              $('#slack-channel-selected').show();
-
               $('#drive-folder-panel').show();
               $('#drive-folder-form').show();
               animate_show('#drive-folder-panel', 'bounceInDown');
@@ -471,30 +424,6 @@
               return;
             }
 
-            if (params.code && state.g) {
-              // step 2 completed, slack authorization;
-              $('#google-auth-success').show();
-              $('#google-auth-panel').show();
-              $('#discord-webhook-success').show();
-              $('#discord-webhook-panel').show();
-              $('#slack-channel-form').show();
-              animate_show('#slack-channel-panel', 'bounceInDown');
-              $('#action-select-channel').click(function(){
-                function handler(){
-                  document.location.href="/"+"?state="+encodeURIComponent(JSON.stringify($.extend({}, state, { s: params.code, c: $('#slack-channel').val() || "#general"})));
-                }
-                if(window.ga){
-                   ga('send', 'event', 'registration-step', 'action-select-channel', {
-                       hitCallback: handler
-                   })
-                }else{
-                    handler();
-                }                
-                return false;
-              });
-              return;
-            }
-
             if (params.code && !state.g) {
               // step 1 completed, google authorization;
               $('#google-auth-success').show();
@@ -506,11 +435,10 @@
                   var webhookVal = $('#discord-webhook').val();
                   var reg = new RegExp("https?:\/\/discordapp\.com\/api\/webhooks\/[0-9]+\/.*")
                   if(!reg.test(webhookVal)) return;
-                  // slack_oauth(JSON.stringify($.extend({}, state, { g: params.code})));
-                  document.location.href="/"+"?state="+encodeURIComponent(JSON.stringify($.extend({}, state, { s: "slackFakeOauthCode", c:  "#general", g: params.code})));
+                  document.location.href="/"+"?state="+encodeURIComponent(JSON.stringify($.extend({}, state, { w: webhookVal, c:  "#general", g: params.code})));
                 }
                 if(window.ga){
-                   ga('send', 'event', 'registration-step', 'action-auth-slack', {
+                   ga('send', 'event', 'registration-step', 'action-discord-webhook', {
                        hitCallback: handler
                    })
                 }else{

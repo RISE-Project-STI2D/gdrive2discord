@@ -66,11 +66,11 @@ const (
 )
 
 var actionNames = []string{
-	Deleted:  "Deleted",
-	Created:  "Created",
-	Modified: "Modified",
-	Shared:   "Shared",
-	Viewed:   "Viewed",
+	Deleted:  "❌ Deleted",
+	Created:  "⬆️ Created",
+	Modified: "✏️ Modified",
+	Shared:   "🔗 Shared",
+	Viewed:   "👁️ Viewed",
 }
 
 func (t Action) String() string {
