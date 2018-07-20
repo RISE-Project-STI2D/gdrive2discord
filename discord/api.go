@@ -148,7 +148,7 @@ func PostMessage(client *http.Client, webhookURL string, message *Message) (Stat
 	if err != nil {
 		return CannotConnect, err
 	}
-	if response.StatusCode != 204 {
+	if response.StatusCode == 401 || response.StatusCode == 404 {
 		return UnknownWebhook, errors.New("Unknown webhook")
 	}
 	defer response.Body.Close()
