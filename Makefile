@@ -1,4 +1,4 @@
-PROJECT=gdrive2slack
+PROJECT=gdrive2discord
 UID=$(shell id -u)
 GID=$(shell id -g)
 VERSION=$(shell git describe --always)

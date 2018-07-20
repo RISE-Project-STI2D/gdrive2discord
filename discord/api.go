@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 )
 
@@ -142,7 +141,6 @@ func PostMessage(client *http.Client, webhookURL string, message *Message) (Stat
 		IconUrl:     message.IconUrl,
 		Attachments: message.Attachments}
 	jsonValue, _ := json.Marshal(payload)
-	fmt.Printf(string(jsonValue))
 	//"attachments": {string(payload)},
 	response, err := client.Post(webhookURL, "application/json", bytes.NewBuffer(jsonValue))
 	if err != nil {
