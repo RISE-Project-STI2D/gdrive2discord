@@ -45,7 +45,7 @@ func CreateDiscordAttachment(change *drive.ChangeItem) *discord.Attachment {
 		editor = "Unknown"
 	}
 	return &discord.Attachment{
-		Fallback: fmt.Sprintf("➡️ __Changes Detected to %s :__ %s - %s", change.Type, change.File.AlternateLink, change.File.Title),
+		Fallback: fmt.Sprintf("➡️ __Changes Detected to %s :__ %s - **%s**", change.Type, change.File.AlternateLink, change.File.Title),
 		Fields: []discord.Field{
 			{
 				Title: fmt.Sprintf("%s %s", change.LastAction, change.Type),
