@@ -3,10 +3,11 @@ package drive
 import (
 	"encoding/json"
 	"errors"
-	"github.com/optionfactory/gdrive2slack/google"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"../../google"
 )
 
 type Folders struct {
@@ -83,10 +84,11 @@ func index(folders []*folder) *Folders {
 func fetchFoldersPage(client *http.Client, accessToken string, nextPageToken string) (google.StatusCode, error, *folders) {
 	u, _ := url.Parse("https://www.googleapis.com/drive/v2/files")
 	q := u.Query()
-	q.Set("corpus", "DOMAIN")
 	q.Set("q", "mimeType = 'application/vnd.google-apps.folder'")
 	q.Set("fields", "items(id,parents(id),title),nextPageToken")
 	q.Set("maxResults", "1000")
+	q.Set("includeTeamDriveItems", "true")
+	q.Set("supportsTeamDrives", "true")
 	if nextPageToken != "" {
 		q.Set("pageToken", nextPageToken)
 	}

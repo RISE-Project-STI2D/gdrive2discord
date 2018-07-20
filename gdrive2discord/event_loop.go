@@ -1,12 +1,13 @@
-package gdrive2slack
+package gdrive2discord
 
 import (
-	"github.com/optionfactory/gdrive2slack/google"
-	"github.com/optionfactory/gdrive2slack/google/drive"
-	"github.com/optionfactory/gdrive2slack/mailchimp"
-	"github.com/optionfactory/gdrive2slack/slack"
 	"os"
 	"time"
+
+	"../discord"
+	"../google"
+	"../google/drive"
+	"../mailchimp"
 )
 
 func EventLoop(env *Environment) {
@@ -23,7 +24,7 @@ func EventLoop(env *Environment) {
 			waitFor = time.Duration(env.Configuration.Interval)*time.Second - time.Now().Sub(lastLoopTime)
 		}
 		if waitFor < 0 {
-			waitFor = time.Duration(1) * time.Second
+			waitFor = time.Duration(3) * time.Second
 		}
 		select {
 		case subscriptionAndAccessToken := <-env.RegisterChannel:
@@ -31,10 +32,10 @@ func EventLoop(env *Environment) {
 			alreadySubscribed := subscriptions.Contains(subscription.GoogleUserInfo.Email)
 			subscriptions.Add(subscription, subscriptionAndAccessToken.GoogleAccessToken)
 			if alreadySubscribed {
-				env.Logger.Info("[%s/%s] *subscription: '%s' '%s'", subscription.GoogleUserInfo.Email, subscription.SlackUserInfo.User, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName)
+				env.Logger.Info("[%s/%s] *subscription: '%s' '%s'", subscription.GoogleUserInfo.Email, subscription.WebhookInfo.ID, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName)
 			} else {
-				env.Logger.Info("[%s/%s] +subscription: '%s' '%s'", subscription.GoogleUserInfo.Email, subscription.SlackUserInfo.User, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName)
-				go mailchimpRegistrationTask(env, subscription)
+				env.Logger.Info("[%s/%s] +subscription: '%s' '%s'", subscription.GoogleUserInfo.Email, subscription.WebhookInfo.ID, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName)
+				// go mailchimpRegistrationTask(env, subscription)
 			}
 		case s := <-env.SignalsChannel:
 			env.Logger.Info("Exiting: got signal %v", s)
@@ -69,10 +70,10 @@ func EventLoop(env *Environment) {
 					subscription, message, removed := subscriptions.HandleFailure(response.Email)
 					if removed {
 						removals++
-						env.Logger.Info("[%s/%s] -subscription: '%s' '%s' %s", response.Email, subscription.SlackUserInfo.User, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName, message)
-						go mailchimpDeregistrationTask(env, subscription)
+						env.Logger.Info("[%s/%s] -subscription: '%s' '%s' %s", response.Email, subscription.WebhookInfo.ID, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName, message)
+						// go mailchimpDeregistrationTask(env, subscription)
 					} else {
-						env.Logger.Info("[%s/%s] !subscription: '%s' '%s' %s", response.Email, subscription.SlackUserInfo.User, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName, message)
+						env.Logger.Info("[%s/%s] !subscription: '%s' '%s' %s", response.Email, subscription.WebhookInfo.ID, subscription.GoogleUserInfo.GivenName, subscription.GoogleUserInfo.FamilyName, message)
 					}
 				}
 			}
@@ -99,14 +100,14 @@ func worker(id int, env *Environment, subAndStates <-chan *subscriptionAndUserSt
 
 func serveUserTask(env *Environment, subscription *Subscription, userState *UserState) (result response) {
 	email := subscription.GoogleUserInfo.Email
-	slackUser := subscription.SlackUserInfo.User
+	webhookID := subscription.WebhookInfo.ID
 	result = response{
 		Email:   email,
 		Success: true,
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			env.Logger.Warning("[%s/%s] recovering. reason: %v", email, slackUser, r)
+			env.Logger.Warning("[%s/%s] recovering. reason: %v", email, webhookID, r)
 			result.Success = false
 		}
 	}()
@@ -117,7 +118,7 @@ func serveUserTask(env *Environment, subscription *Subscription, userState *User
 			return drive.LargestChangeId(env.HttpClient, userState.Gdrive, at)
 		})
 		if err != nil {
-			env.Logger.Warning("[%s/%s] %s", email, slackUser, err)
+			env.Logger.Warning("[%s/%s] %s", email, webhookID, err)
 		}
 		return
 	}
@@ -126,7 +127,7 @@ func serveUserTask(env *Environment, subscription *Subscription, userState *User
 		return drive.DetectChanges(env.HttpClient, userState.Gdrive, at)
 	})
 	if err != nil {
-		env.Logger.Warning("[%s/%s] %s", email, slackUser, err)
+		env.Logger.Warning("[%s/%s] %s", email, webhookID, err)
 		return
 	}
 
@@ -135,32 +136,32 @@ func serveUserTask(env *Environment, subscription *Subscription, userState *User
 	}
 	statusCode, err, folders := drive.FetchFolders(env.HttpClient, userState.GoogleAccessToken)
 	if statusCode != google.Ok {
-		env.Logger.Warning("[%s/%s] while fetching folders: %s", email, slackUser, err)
+		env.Logger.Warning("[%s/%s] while fetching folders: %s", email, webhookID, err)
 		return
 	}
-	message := CreateSlackMessage(subscription, userState, folders, env.Version)
+	message := CreateDiscordMessage(subscription, userState, folders, env.Version)
 	if len(message.Attachments) == 0 {
 		return
 	}
 
-	env.Logger.Info("[%s/%s] @%v %v changes", email, slackUser, userState.Gdrive.LargestChangeId, len(message.Attachments))
+	env.Logger.Info("[%s/%s] @%v %v changes", email, webhookID, userState.Gdrive.LargestChangeId, len(message.Attachments))
 
-	status, err := slack.PostMessage(env.HttpClient, subscription.SlackAccessToken, message)
-	if status == slack.NotAuthed || status == slack.InvalidAuth || status == slack.AccountInactive || status == slack.TokenRevoked {
+	status, err := discord.PostMessage(env.HttpClient, subscription.DiscordWebhookURL, message)
+	/*if status == slack.NotAuthed || status == slack.InvalidAuth || status == slack.AccountInactive || status == slack.TokenRevoked {
 		panic(err)
+	}*/
+	if status != discord.Ok {
+		env.Logger.Warning("[%s/%s] %s", email, webhookID, err)
 	}
-	if status != slack.Ok {
-		env.Logger.Warning("[%s/%s] %s", email, slackUser, err)
-	}
-	if status == slack.ChannelNotFound {
-		status, err = slack.PostMessage(env.HttpClient, subscription.SlackAccessToken, CreateSlackUnknownChannelMessage(subscription, env.Configuration.Google.RedirectUri, message))
+	/*if status == discord.InvalidWebhookToken || status == discord.InvalidWebhookToken  {
+		status, err = slack.PostMessage(env.HttpClient, subscription.DiscordWebhookURL, CreateSlackUnknownChannelMessage(subscription, env.Configuration.Google.RedirectUri, message))
 		if status == slack.NotAuthed || status == slack.InvalidAuth || status == slack.AccountInactive || status == slack.TokenRevoked {
 			panic(err)
 		}
-		if status != slack.Ok {
-			env.Logger.Warning("[%s/%s] %s", email, slackUser, err)
+		if status != discord.Ok {
+			env.Logger.Warning("[%s/%s] %s", email, webhookID, err)
 		}
-	}
+	}*/
 	return
 }
 
@@ -192,6 +193,6 @@ func mailchimpDeregistrationTask(env *Environment, subscription *Subscription) {
 
 func mailchimpRecover(env *Environment, subscription *Subscription, task string) {
 	if r := recover(); r != nil {
-		env.Logger.Warning("[%s/%s] unexpected error in mailchimp %s task: %v", subscription.GoogleUserInfo.Email, subscription.SlackUserInfo.User, task, r)
+		env.Logger.Warning("[%s/%s] unexpected error in mailchimp %s task: %v", subscription.GoogleUserInfo.Email, task, r)
 	}
 }

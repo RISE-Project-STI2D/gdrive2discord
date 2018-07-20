@@ -1,3 +1,4 @@
 *.json
+*.exe
 .DS_Store
 __MACOSX

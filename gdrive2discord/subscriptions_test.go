@@ -1,12 +1,13 @@
-package gdrive2slack
+package gdrive2discord
 
 import (
-	"github.com/optionfactory/gdrive2slack/google/userinfo"
-	"github.com/optionfactory/gdrive2slack/slack"
 	_ "log"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"../google/userinfo"
+	"../slack"
 )
 
 func cleanup(t *testing.T, root string, pattern string) {

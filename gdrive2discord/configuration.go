@@ -1,15 +1,15 @@
-package gdrive2slack
+package gdrive2discord
 
 import (
 	"encoding/json"
-	"github.com/optionfactory/gdrive2slack/google"
-	"github.com/optionfactory/gdrive2slack/mailchimp"
-	"github.com/optionfactory/gdrive2slack/slack"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+
+	"../google"
+	"../mailchimp"
 )
 
 type Configuration struct {
@@ -18,7 +18,6 @@ type Configuration struct {
 	Interval         int                        `json:"interval"`
 	GoogleTrackingId string                     `json:"googleTrackingId"`
 	Google           *google.OauthConfiguration `json:"google"`
-	Slack            *slack.OauthConfiguration  `json:"slack"`
 	Mailchimp        *mailchimp.Configuration   `json:"mailchimp"`
 }
 

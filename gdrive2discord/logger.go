@@ -1,4 +1,4 @@
-package gdrive2slack
+package gdrive2discord
 
 import (
 	"io"

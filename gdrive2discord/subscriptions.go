@@ -1,22 +1,23 @@
-package gdrive2slack
+package gdrive2discord
 
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/optionfactory/gdrive2slack/google/drive"
-	"github.com/optionfactory/gdrive2slack/google/userinfo"
-	"github.com/optionfactory/gdrive2slack/slack"
 	"os"
 	"time"
+
+	"../discord"
+	"../google/drive"
+	"../google/userinfo"
 )
 
 type Subscription struct {
-	Channel                    string             `json:"channel"`
-	SlackAccessToken           string             `json:"slack_access_token"`
-	GoogleRefreshToken         string             `json:"google_refresh_token"`
-	GoogleUserInfo             *userinfo.UserInfo `json:"guser"`
-	SlackUserInfo              *slack.UserInfo    `json:"suser"`
-	GoogleInterestingFolderIds []string           `json:"google_interesting_folder_ids"`
+	Channel                    string               `json:"channel"`
+	DiscordWebhookURL          string               `json:"slack_access_token"`
+	GoogleRefreshToken         string               `json:"google_refresh_token"`
+	GoogleUserInfo             *userinfo.UserInfo   `json:"guser"`
+	WebhookInfo                *discord.WebhookInfo `json:"suser"`
+	GoogleInterestingFolderIds []string             `json:"google_interesting_folder_ids"`
 }
 
 type UserState struct {

@@ -3,10 +3,11 @@ package userinfo
 import (
 	"encoding/json"
 	"errors"
-	"github.com/optionfactory/gdrive2slack/google"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+
+	"../../google"
 )
 
 type response struct {

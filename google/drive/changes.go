@@ -3,13 +3,14 @@ package drive
 import (
 	"encoding/json"
 	"errors"
-	"github.com/optionfactory/gdrive2slack/google"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"regexp"
 	"strconv"
 	"time"
+
+	"../../google"
 )
 
 type changes struct {

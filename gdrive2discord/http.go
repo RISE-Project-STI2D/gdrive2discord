@@ -1,21 +1,22 @@
-package gdrive2slack
+package gdrive2discord
 
 import (
 	"encoding/json"
+	"net/http"
+
+	"../discord"
+	"../google"
+	"../google/userinfo"
 	"github.com/go-martini/martini"
 	"github.com/martini-contrib/render"
-	"github.com/optionfactory/gdrive2slack/google"
-	"github.com/optionfactory/gdrive2slack/google/userinfo"
-	"github.com/optionfactory/gdrive2slack/slack"
-	"net/http"
 )
 
 type Request struct {
-	GoogleCode string   `json:"g"`
-	SlackCode  string   `json:"s"`
-	Channel    string   `json:"c"`
-	FolderIds  []string `json:"fids"`
-	FolderName string   `json:"fn"`
+	GoogleCode        string   `json:"g"`
+	DiscordWebhookURL string   `json:"s"`
+	Channel           string   `json:"c"`
+	FolderIds         []string `json:"fids"`
+	FolderName        string   `json:"fn"`
 }
 
 type ErrResponse struct {
@@ -55,8 +56,9 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 		renderer.JSON(400, &ErrResponse{"Invalid oauth code for google"})
 		return
 	}
-	if r.SlackCode == "" {
-		renderer.JSON(400, &ErrResponse{"Invalid oauth code for slack"})
+
+	if r.DiscordWebhookURL == "" {
+		renderer.JSON(400, &ErrResponse{"Invalid webhook for discord"})
 		return
 	}
 	if r.Channel == "" {
@@ -67,32 +69,26 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 		renderer.JSON(500, &ErrResponse{err.Error()})
 		return
 	}
-	slackAccessToken, ostatus, err := slack.NewAccessToken(env.Configuration.Slack, env.HttpClient, r.SlackCode)
-	if ostatus != slack.OauthOk {
-		renderer.JSON(500, &ErrResponse{err.Error()})
-		return
-	}
 	gUserInfo, status, err := userinfo.GetUserInfo(env.HttpClient, googleAccessToken)
 	if status != google.Ok {
 		renderer.JSON(500, &ErrResponse{err.Error()})
 		return
 	}
-	sUserInfo, sstatus, err := slack.GetUserInfo(env.HttpClient, slackAccessToken)
-	if sstatus != slack.Ok {
+	webhookInfo, sstatus, err := discord.GetWebhookInfo(env.HttpClient, r.DiscordWebhookURL)
+	if sstatus != discord.Ok {
 		renderer.JSON(500, &ErrResponse{err.Error()})
 		return
 	}
-
-	welcomeMessage := CreateSlackWelcomeMessage(r.Channel, env.Configuration.Google.RedirectUri, sUserInfo, env.Version)
-	cstatus, err := slack.PostMessage(env.HttpClient, slackAccessToken, welcomeMessage)
+	welcomeMessage := CreateDiscordWelcomeMessage(r.Channel, env.Configuration.Google.RedirectUri, gUserInfo, env.Version)
+	cstatus, err := discord.PostMessage(env.HttpClient, r.DiscordWebhookURL, welcomeMessage)
 
 	env.RegisterChannel <- &SubscriptionAndAccessToken{
 		Subscription: &Subscription{
 			r.Channel,
-			slackAccessToken,
+			r.DiscordWebhookURL,
 			googleRefreshToken,
 			gUserInfo,
-			sUserInfo,
+			webhookInfo,
 			r.FolderIds,
 		},
 		GoogleAccessToken: googleAccessToken,
@@ -100,7 +96,7 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 
 	renderer.JSON(200, map[string]interface{}{
 		"user":         gUserInfo,
-		"channelFound": cstatus == slack.Ok,
+		"channelFound": cstatus == discord.Ok,
 	})
 
 }
