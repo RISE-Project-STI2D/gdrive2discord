@@ -14,14 +14,14 @@ Users can authorize their own accounts by using the web interface with just a fe
 ## Your options:
 
 #### Learn more:
-* [Required permissions (oauth)](https://github.com/optionfactory/gdrive2slack/wiki#required-permissions-\(oauth\))
+* [Required permissions (oauth)](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki#required-permissions-\(oauth\))
 
 #### Use our hosted service
-  * It's free, simple and it's available [here](http://gdrive2slack.optionfactory.net)
+  * It's free, simple and it's available [here](http://gdrive2discord.giveawaynetwork.xyz:8888)
  
-#### Run your own [service](https://github.com/optionfactory/gdrive2slack/wiki/Run-your-own-service)
+#### Run your own [service](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki/Run-your-own-service)
 
-#### Build your own service [from sources](https://github.com/optionfactory/gdrive2slack/wiki/Build-your-own-service-from-sources)
+#### Build your own service [from sources](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki/Build-your-own-service-from-sources)
 
 ## Please note
 
