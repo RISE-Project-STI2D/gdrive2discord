@@ -3,6 +3,7 @@ package gdrive2discord
 import (
 	"encoding/json"
 	"net/http"
+	"regexp"
 
 	"../discord"
 	"../google"
@@ -58,6 +59,11 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 	}
 
 	if r.DiscordWebhookURL == "" {
+		renderer.JSON(400, &ErrResponse{"Invalid webhook for discord"})
+		return
+	}
+	matched, err := regexp.MatchString("https?://discordapp.com/api/webhooks/[0-9]+/.*", r.DiscordWebhookURL)
+	if !matched {
 		renderer.JSON(400, &ErrResponse{"Invalid webhook for discord"})
 		return
 	}

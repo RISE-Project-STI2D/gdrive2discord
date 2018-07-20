@@ -92,18 +92,18 @@
                 </section>
               </div>
 
-              <div id="slack-auth-panel" class="panel panel-default subscription" style="display: none">
-                <section id="slack-auth-success" class="panel-body title" style="display: none">
+              <div id="discord-webhook-panel" class="panel panel-default subscription" style="display: none">
+                <section id="discord-webhook-success" class="panel-body title" style="display: none">
                   <div>
                     <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x text-success"></i><i class="fa fa-stack-1x fa-inverse fa-check"></i></span></div>
                     <div>Access authorized for Slack domain</div>
                   </div>
                 </section>
-                <section id="slack-auth-request" class="panel-body title" style="display: none">
+                <section id="discord-webhook-request" class="panel-body title" style="display: none">
                   <div>
                     <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>2</span><span class="divider">/</span><span class="total">4</span></strong></span></div>
-                    <div>Authorize access to Slack domain</div>
-                    <div class="action"><button id="action-auth-slack" class="btn btn-success btn-lg push-right">Go</button></div>
+                    <div class="form-group"><label for="slack-channel">Discord webhook:</label><input type="text" class="form-control" id="discord-webhook" placeholder="https://discordapp.com/api/webhooks/744984947974325684/EuiouoipzhjfEUopiuopieEiopuiopuze_JOEJOIJo^pijez_aojoaj"></div>
+                    <div class="action"><button id="action-discord-webhook" class="btn btn-success btn-lg push-right">Go</button></div>
                   </div>
                 </section>
               </div>
@@ -334,13 +334,6 @@
                 + "&approval_prompt=force"
                 + "&response_type=code";
         }
-        function slack_oauth(state){
-            document.location.href= "https://slack.com/oauth/authorize"
-                +"?state=" + encodeURIComponent(state)
-                +"&scope=identify,chat:write:bot"
-                +"&client_id=" + encodeURIComponent("{{.Configuration.Slack.ClientId}}")
-                +"&redirect_uri=" + encodeURIComponent("{{.Configuration.Slack.RedirectUri}}");
-        }
         function registration_success(state) {
           document.location.href="/"
             +"?state="+encodeURIComponent(state)
@@ -371,8 +364,8 @@
             if (state.d) {
               $('#google-auth-success').show();
               $('#google-auth-panel').show();
-              $('#slack-auth-success').show();
-              $('#slack-auth-panel').show();
+              $('#discord-webhook-success').show();
+              $('#discord-webhook-panel').show();
               if (state.f) {
                 $('#selected-channel').text(state.c);
                 $('#slack-channel-selected').show();
@@ -399,7 +392,7 @@
                 return retval;
               }
               animate_hide('#google-auth-panel', 'fadeOut', nextDelay());
-              animate_hide('#slack-auth-panel', 'fadeOut',  nextDelay());
+              animate_hide('#discord-webhook-panel', 'fadeOut',  nextDelay());
               if (state.f) {
                 animate_hide('#slack-channel-panel', 'fadeOut', nextDelay());
               }
@@ -410,8 +403,8 @@
             if (params.error) {
               $('#google-auth-success').show();
               $('#google-auth-panel').show();
-              $('#slack-auth-success').show();
-              $('#slack-auth-panel').show();
+              $('#discord-webhook-success').show();
+              $('#discord-webhook-panel').show();
               $('#selected-channel').text(state.c);
               $('#slack-channel-selected').show();
               $('#slack-channel-panel').show();
@@ -421,15 +414,15 @@
               $('#registration-panel').show();
 
               animate_hide('#google-auth-panel', 'fadeOut', 1000);
-              animate_hide('#slack-auth-panel', 'fadeOut', 1500);
+              animate_hide('#discord-webhook-panel', 'fadeOut', 1500);
               animate_hide('#slack-channel-panel', 'fadeOut', 2000);
               return;
             }
             if (state.c) {
               $('#google-auth-success').show();
               $('#google-auth-panel').show();
-              $('#slack-auth-success').show();
-              $('#slack-auth-panel').show();
+              $('#discord-webhook-success').show();
+              $('#discord-webhook-panel').show();
               $('#slack-channel-panel').show();
               $('#selected-channel').text(state.c);
               $('#slack-channel-selected').show();
@@ -482,8 +475,8 @@
               // step 2 completed, slack authorization;
               $('#google-auth-success').show();
               $('#google-auth-panel').show();
-              $('#slack-auth-success').show();
-              $('#slack-auth-panel').show();
+              $('#discord-webhook-success').show();
+              $('#discord-webhook-panel').show();
               $('#slack-channel-form').show();
               animate_show('#slack-channel-panel', 'bounceInDown');
               $('#action-select-channel').click(function(){
@@ -506,10 +499,13 @@
               // step 1 completed, google authorization;
               $('#google-auth-success').show();
               $('#google-auth-panel').show();
-              $('#slack-auth-request').show();
-              animate_show('#slack-auth-panel', 'bounceInDown');
-              $('#action-auth-slack').click(function(){
+              $('#discord-webhook-request').show();
+              animate_show('#discord-webhook-panel', 'bounceInDown');
+              $('#action-discord-webhook').click(function(){
                 function handler(){
+                  var webhookVal = $('#discord-webhook').val();
+                  var reg = new RegExp("https?:\/\/discordapp\.com\/api\/webhooks\/[0-9]+\/.*")
+                  if(!reg.test(webhookVal)) return;
                   // slack_oauth(JSON.stringify($.extend({}, state, { g: params.code})));
                   document.location.href="/"+"?state="+encodeURIComponent(JSON.stringify($.extend({}, state, { s: "slackFakeOauthCode", c:  "#general", g: params.code})));
                 }
