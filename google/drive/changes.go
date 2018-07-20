@@ -68,7 +68,7 @@ const (
 var actionNames = []string{
 	Deleted:  "❌ Deleted",
 	Created:  "⬆️ Created",
-	Modified: "✏️ Modified",
+	Modified: "📝 Modified",
 	Shared:   "🔗 Shared",
 	Viewed:   "👁️ Viewed",
 }

@@ -147,9 +147,9 @@ func serveUserTask(env *Environment, subscription *Subscription, userState *User
 	env.Logger.Info("[%s/%s] @%v %v changes", email, webhookID, userState.Gdrive.LargestChangeId, len(message.Attachments))
 
 	status, err := discord.PostMessage(env.HttpClient, subscription.DiscordWebhookURL, message)
-	/*if status == slack.NotAuthed || status == slack.InvalidAuth || status == slack.AccountInactive || status == slack.TokenRevoked {
+	if status == discord.InvalidWebhookToken || status == discord.UnknownWebhook {
 		panic(err)
-	}*/
+	}
 	if status != discord.Ok {
 		env.Logger.Warning("[%s/%s] %s", email, webhookID, err)
 	}

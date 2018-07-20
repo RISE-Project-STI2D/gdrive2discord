@@ -53,7 +53,7 @@ func CreateDiscordAttachment(change *drive.ChangeItem) *discord.Attachment {
 				Short: true,
 			},
 			{
-				Title: "Editor",
+				Title: "🖊️ Editor",
 				Value: editor,
 				Short: true,
 			},

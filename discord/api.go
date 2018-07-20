@@ -148,6 +148,9 @@ func PostMessage(client *http.Client, webhookURL string, message *Message) (Stat
 	if err != nil {
 		return CannotConnect, err
 	}
+	if response.StatusCode != 204 {
+		return UnknownError, errors.New("Unknown error")
+	}
 	defer response.Body.Close()
 	return Ok, nil
 }
