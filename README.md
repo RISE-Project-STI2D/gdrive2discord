@@ -26,3 +26,5 @@ Users can authorize their own accounts by using the web interface with just a fe
 ## Please note
 
 This project was originally forked from [https://github.com/optionfactory/gdrive2slack](https://github.com/optionfactory/gdrive2slack)
+
+Copyrights © 2015, OptionFactory
