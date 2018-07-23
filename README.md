@@ -17,7 +17,7 @@ Users can authorize their own accounts by using the web interface with just a fe
 * [Required permissions (oauth)](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki#required-permissions-\(oauth\))
 
 #### Use our hosted service
-  * It's free, simple and it's available [here](http://gdrive2discord.giveawaynetwork.xyz:8888)
+  * It's free, simple and it's available [here](http://gdrive2discord.giveawaynetwork.xyz:8080)
  
 #### Run your own [service](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki/Run-your-own-service)
 
@@ -27,4 +27,4 @@ Users can authorize their own accounts by using the web interface with just a fe
 
 This project was originally forked from [https://github.com/optionfactory/gdrive2slack](https://github.com/optionfactory/gdrive2slack)
 
-Copyrights © 2015, OptionFactory
+Copyright (c) 2015, OptionFactory s.r.l. All rights reserved.
