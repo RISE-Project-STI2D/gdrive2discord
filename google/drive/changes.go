@@ -140,7 +140,7 @@ func query(client *http.Client, state *State, accessToken string) (google.Status
 		q.Set("startChangeId", strconv.FormatUint(state.LargestChangeId+1, 10))
 	}
 	q.Set("includeDeleted", "true")
-	q.Set("includeSubscribed", "false")
+	q.Set("includeSubscribed", "true")
 	q.Set("maxResults", "100")
 	u.RawQuery = q.Encode()
 	req, _ := http.NewRequest("GET", u.String(), nil)
