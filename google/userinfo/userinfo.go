@@ -14,7 +14,7 @@ type response struct {
 	Error       *google.ErrorResponse `json:"error"`
 	DisplayName string                `json:"displayName"`
 	Name        name                  `json:"name"`
-	Emails      []email               `json:"emails"`
+	Emails      []email               `json:"emailAddresses"`
 }
 
 type name struct {
@@ -30,14 +30,13 @@ type UserInfo struct {
 	DisplayName string `json:"displayName"`
 	GivenName   string `json:"givenName"`
 	FamilyName  string `json:"familyName"`
-	Email       string `json:"email"`
+	Email       string `json:"emailAddresses"`
 }
 
 func GetUserInfo(client *http.Client, accessToken string) (*UserInfo, google.StatusCode, error) {
-	u, _ := url.Parse("https://www.googleapis.com/plus/v1/people/me")
+	u, _ := url.Parse("https://people.googleapis.com/v1/people/me")
 	q := u.Query()
-	q.Set("fields", "name,displayName,emails")
-	q.Set("userId", "me")
+	q.Set("personFields", "names,emailAddresses")
 	u.RawQuery = q.Encode()
 	req, _ := http.NewRequest("GET", u.String(), nil)
 	req.Header.Add("Authorization", "Bearer "+accessToken)

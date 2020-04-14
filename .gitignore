@@ -1,4 +1,5 @@
 *.json
+subscriptions.json.*
 *.exe
 .DS_Store
 __MACOSX

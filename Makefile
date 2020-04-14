@@ -6,10 +6,10 @@ SHELL = /bin/bash
 local: FORCE
 	@echo spawning docker container
 	@docker run --rm=true \
-		-v ${PWD}/:/go/src/github.com/optionfactory/gdrive2slack/ \
+		-v ${PWD}/:/go/src/github.com/RISE-Project-STI2D/gdrive2discord/ \
 		-v ${PWD}/Makefile:/go/Makefile \
 		-v ${PWD}/bin:/go/bin \
-		-w /go/src/github.com/optionfactory/gdrive2slack/ \
+		-w /go/src/github.com/RISE-Project-STI2D/gdrive2discord/ \
 		golang:1.4-cross \
 		make -f /go/Makefile $(PROJECT)-linux-amd64 UID=${UID} GID=${GID} VERSION=${VERSION}
 
@@ -19,10 +19,10 @@ run-local: local
 opfa: FORCE
 	@echo spawning docker container
 	@docker run --rm=true \
-		-v ${PWD}/:/go/src/github.com/optionfactory/gdrive2slack/ \
+		-v ${PWD}/:/go/src/github.com/RISE-Project-STI2D/gdrive2discord/ \
 		-v ${PWD}/Makefile:/go/Makefile \
 		-v ${PWD}/bin:/go/bin \
-		-w /go/src/github.com/optionfactory/gdrive2slack/ \
+		-w /go/src/github.com/RISE-Project-STI2D/gdrive2discord/ \
 		golang:1.4-cross \
 		make -f /go/Makefile $(PROJECT)-linux-amd64 UID=${UID} GID=${GID} VERSION=${VERSION}
 
