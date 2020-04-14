@@ -70,7 +70,7 @@ type OauthState struct {
 }
 
 func NewAccessToken(conf *OauthConfiguration, client *http.Client, code string) (string, string, StatusCode, error) {
-	response, err := client.PostForm("https://accounts.google.com/o/oauth2/token", url.Values{
+	response, err := client.PostForm("https://oauth2.googleapis.com/token", url.Values{
 		"code":          {code},
 		"client_id":     {conf.ClientId},
 		"client_secret": {conf.ClientSecret},
@@ -104,7 +104,7 @@ func NewAccessToken(conf *OauthConfiguration, client *http.Client, code string) 
 }
 
 func RefreshAccessToken(conf *OauthConfiguration, client *http.Client, refreshToken string) (string, StatusCode, error) {
-	response, err := client.PostForm("https://accounts.google.com/o/oauth2/token", url.Values{
+	response, err := client.PostForm("https://oauth2.googleapis.com/token", url.Values{
 		"client_secret": {conf.ClientSecret},
 		"client_id":     {conf.ClientId},
 		"refresh_token": {refreshToken},

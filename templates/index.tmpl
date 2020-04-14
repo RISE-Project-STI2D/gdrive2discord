@@ -292,7 +292,7 @@
         }
 
         function google_oauth(state){
-            document.location.href = "https://accounts.google.com/o/oauth2/auth"
+            document.location.href = "https://accounts.google.com/o/oauth2/v2/auth"
                 + "?state=" + encodeURIComponent(state)
                 + "&scope=" + encodeURIComponent([
                     "https://www.googleapis.com/auth/drive.metadata.readonly",
