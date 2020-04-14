@@ -17,7 +17,7 @@ Users can authorize their own accounts by using the web interface with just a fe
 * [Required permissions (oauth)](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki#required-permissions-\(oauth\))
  
 #### Use our hosted service
-  * It's free, simple and no longer maintained (lel)
+  * It's free, simple and no longer maintained
 
 #### Run your own [service](https://github.com/RISE-Project-STI2D/gdrive2discord/wiki/Run-your-own-service)
 
