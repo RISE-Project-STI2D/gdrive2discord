@@ -79,7 +79,7 @@
                 <section id="discord-webhook-request" class="panel-body title" style="display: none">
                   <div>
                     <div class="symbol"><span class="fa-stack fa-lg icon"><i class="fa fa-square fa-stack-2x"></i><strong class="fa-stack-1x fa-inverse"><span>2</span><span class="divider">/</span><span class="total">3</span></strong></span></div>
-                    <div class="form-group"><label for="discord-channel">Discord webhook:</label><input type="text" class="form-control" id="discord-webhook" placeholder="https://discordapp.com/api/webhooks/744984947974325684/EuiouoipzhjfEUopiuopieEiopuiopuze_JOEJOIJo^pijez_aojoaj"></div>
+                    <div class="form-group"><label for="discord-channel">Discord webhook:</label><input type="text" class="form-control" id="discord-webhook" placeholder="https://discord.com/api/webhooks/744984947974325684/EuiouoipzhjfEUopiuopieEiopuiopuze_JOEJOIJo^pijez_aojoaj"></div>
                     <div class="action"><button id="action-discord-webhook" class="btn btn-success btn-lg push-right">Go</button></div>
                   </div>
                 </section>
@@ -431,7 +431,7 @@
               $('#action-discord-webhook').click(function(){
                 function handler(){
                   var webhookVal = $('#discord-webhook').val();
-                  var reg = new RegExp("https?:\/\/discordapp\.com\/api\/webhooks\/[0-9]+\/.*")
+                  var reg = new RegExp("https?:\/\/discord(app)?\.com\/api\/webhooks\/[0-9]+\/.*")
                   if(!reg.test(webhookVal)) return;
                   document.location.href="/"+"?state="+encodeURIComponent(JSON.stringify($.extend({}, state, { w: webhookVal, c:  "#general", g: params.code})));
                 }
