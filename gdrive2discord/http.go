@@ -61,7 +61,7 @@ func handleSubscriptionRequest(env *Environment, renderer render.Render, req *ht
 		renderer.JSON(400, &ErrResponse{"Invalid webhook for discord"})
 		return
 	}
-	matched, err := regexp.MatchString("https?://discordapp.com/api/webhooks/[0-9]+/.*", r.DiscordWebhookURL)
+	matched, err := regexp.MatchString("https?://discord(app?).com/api/webhooks/[0-9]+/.*", r.DiscordWebhookURL)
 	if !matched {
 		renderer.JSON(400, &ErrResponse{"Invalid webhook for discord"})
 		return
